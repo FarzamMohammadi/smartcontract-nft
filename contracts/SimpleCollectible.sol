@@ -18,7 +18,7 @@ contract SimpleCollectible is ERC721URIStorage {
         returns (uint256)
     {
         uint256 newTokenId = tokenCounter;
-        _safeMint(msg.sender, newTokenId);
+        _safeMint(payable(msg.sender), newTokenId);
         _setTokenURI(newTokenId, tokenURI);
         tokenCounter = tokenCounter + 1;
         return newTokenId;
