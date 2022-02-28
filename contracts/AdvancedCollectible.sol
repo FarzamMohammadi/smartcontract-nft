@@ -11,8 +11,8 @@ contract AdvancedCollectible is ERC721URIStorage, VRFConsumerBase {
     bytes32 public keyhash;
     uint256 public fee;
     enum Breed {
-        PUT,
-        SJINA_INU,
+        PUG,
+        SHIBA_INU,
         ST_BERNARD
     }
     mapping(uint256 => Breed) public tokenIdToBreed;
@@ -21,13 +21,13 @@ contract AdvancedCollectible is ERC721URIStorage, VRFConsumerBase {
     event breedAssigned(uint256 indexed tokenId, Breed breed);
 
     constructor(
-        address _VRFCoordinator,
+        address _vrfCoordinator,
         address _linkToken,
         bytes32 _keyhash,
         uint256 _fee
     )
         public
-        VRFConsumerBase(_VRFCoordinator, _linkToken)
+        VRFConsumerBase(_vrfCoordinator, _linkToken)
         ERC721("Dogie", "DOG")
     {
         tokenCounter = 0;
@@ -35,10 +35,7 @@ contract AdvancedCollectible is ERC721URIStorage, VRFConsumerBase {
         fee = _fee;
     }
 
-    function createCollectible(string memory tokenURI)
-        public
-        returns (bytes32)
-    {
+    function createCollectible() public returns (bytes32) {
         bytes32 requestId = requestRandomness(keyhash, fee);
         requestIdToSender[requestId] = msg.sender;
         emit requestedCollectible(requestId, msg.sender);
@@ -54,11 +51,11 @@ contract AdvancedCollectible is ERC721URIStorage, VRFConsumerBase {
         emit breedAssigned(newTokenId, breed);
         address owner = requestIdToSender[requestId];
         _safeMint(owner, newTokenId);
-        tokenCounter += 1;
+        tokenCounter = tokenCounter + 1;
     }
 
     function setTokenURI(uint256 tokenId, string memory _tokenURI) public {
-        // pub, shiba inu, st bernard
+        // pug, shiba inu, st bernard
         require(
             _isApprovedOrOwner(_msgSender(), tokenId),
             "ERC721: caller is not owner no approved"
